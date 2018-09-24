@@ -22,9 +22,22 @@ type Person struct {
 	Password  string `json:"password"`
 }
 type Quiz struct {
-	ID     uint   `json:"id`
-	name   string `json:"name"`
-	genere string `json:"genere"`
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Genre string `json:"genre"`
+}
+type Question struct {
+	ID       uint   `json:"id"`
+	Question string `json:"question"`
+	Opt1     string `json:"opt1"`
+	Opt2     string `json:"opt2"`
+	Opt3     string `json:"opt3"`
+	Opt4     string `json:"opt4"`
+	Ans1     bool   `json:"ans1"`
+	Ans2     bool   `json:"ans2"`
+	Ans3     bool   `json:"ans3"`
+	Ans4     bool   `json:"ans4"`
+	QuizId   uint   `json:"QuizID,string"`
 }
 
 func main() {
@@ -35,33 +48,44 @@ func main() {
 	defer db.Close()
 
 	db.AutoMigrate(&Person{})
+	db.AutoMigrate(&Quiz{})
+	db.AutoMigrate(&Question{})
 	r := gin.Default()
 
 	r.POST("/people", CreateAccount)
 	r.POST("/authenticate/", Login)
 
 	private := r.Group("/private")
-	{
-        r.GET("/quiz-list/", ViewAllQuizzes)
-        r.POST("/CreateQuiz/", CreateQuiz)
-		r.GET("/people/:id", GetPerson)
-		r.PUT("/people/:id", UpdatePerson)
-		r.DELETE("/people/:id", DeletePerson)
-	}
 	private.Use(AuthRequired())
+	{
+		private.GET("/quiz-list/", ViewAllQuizzes)
+		private.POST("/CreateQuiz/", CreateQuiz)
+		private.GET("/AllPeople/", ListPeople)
+		// r.GET("/people/:id", GetPerson)
+		// r.PUT("/people/:id", UpdatePerson)
+		private.POST("/DeleteQuiz/:id", DeleteQuiz)
+		private.POST("/DeletePerson/:id", DeletePerson)
+		private.POST("/AddQuestion/", AddQuestion)
+		private.POST("/delete-question/:id", DeleteQuestion)
+		private.GET("/question-list/:id", ListQuestions)
+	}
+
 	r.Run(":8080") // Run on port 8080
 }
 
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("AuthReqAuthReqAuthReq==============================")
 		// session := sessions.Default(c)
-		user, _ := store.Get(c.Request, "session-name")
-		if user == nil {
-			// You'd normally redirect to login page
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
-		} else {
+		user, err := store.Get(c.Request, "session-name")
+		fmt.Println(err)
+		fmt.Println("AuthRequired", err, user.Values)
+		if user.Values["logged-in"] == true {
 			// Continue down the chain to handler etc
 			c.Next()
+		} else {
+			// You'd normally redirect to login page
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
 		}
 	}
 }
@@ -71,7 +95,7 @@ func Login(c *gin.Context) {
 	var received_person Person
 	c.BindJSON(&received_person)
 	d := db.Where("email = ?", received_person.Email).First(&person)
-	fmt.Println(d)
+	fmt.Println("login", d)
 	c.Header("access-control-allow-origin", "http://localhost:3000")
 	c.Header("access-control-allow-credentials", "true")
 
@@ -79,9 +103,10 @@ func Login(c *gin.Context) {
 		session, err := store.Get(c.Request, "session-name")
 		session.Values["email"] = person.Email
 		session.Values["id"] = person.ID
+		session.Values["logged-in"] = true
 		session.Save(c.Request, c.Writer)
 
-		fmt.Println(session.Values, err)
+		fmt.Println("login", session.Values, err)
 
 		c.JSON(200, "Authenticated")
 	} else {
@@ -89,27 +114,48 @@ func Login(c *gin.Context) {
 	}
 }
 
+func DeleteQuiz(c *gin.Context) {
+	c.Header("access-control-allow-origin", "http://localhost:3000")
+	c.Header("access-control-allow-credentials", "true")
+	id := c.Params.ByName("id")
+	var quiz Quiz
+	d := db.Where("id = ?", id).Delete(&quiz)
+	fmt.Println(d)
+	c.JSON(200, gin.H{"id #" + id: "deleted"})
+}
+
+func DeleteQuestion(c *gin.Context) {
+	c.Header("access-control-allow-origin", "http://localhost:3000")
+	c.Header("access-control-allow-credentials", "true")
+	id := c.Params.ByName("id")
+	var question Question
+	d := db.Where("id = ?", id).Delete(&question)
+	fmt.Println(d)
+	c.JSON(200, gin.H{"id #" + id: "deleted"})
+}
+
 func DeletePerson(c *gin.Context) {
+	c.Header("access-control-allow-origin", "http://localhost:3000")
+	c.Header("access-control-allow-credentials", "true")
 	id := c.Params.ByName("id")
 	var person Person
 	d := db.Where("id = ?", id).Delete(&person)
 	fmt.Println(d)
-	c.Header("access-control-allow-origin", "*")
 	c.JSON(200, gin.H{"id #" + id: "deleted"})
 }
 
-func UpdatePerson(c *gin.Context) {
-	var person Person
-	id := c.Params.ByName("id")
-	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
-		c.AbortWithStatus(404)
-		fmt.Println(err)
-	}
-	c.BindJSON(&person)
-	db.Save(&person)
-	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
-	c.JSON(200, person)
-}
+// func UpdatePerson(c *gin.Context) {
+// 	var person Person
+// 	id := c.Params.ByName("id")
+// 	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
+// 		c.AbortWithStatus(404)
+// 		fmt.Println(err)
+// 	}
+// 	c.BindJSON(&person)
+// 	db.Save(&person)
+// 	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+// 	c.JSON(200, person)
+// }
 
 func CreateAccount(c *gin.Context) {
 	var person Person
@@ -120,39 +166,78 @@ func CreateAccount(c *gin.Context) {
 	session, _ := store.Get(c.Request, "session-name")
 	session.Values["email"] = person.Email
 	session.Values["id"] = person.ID
+	session.Values["logged-in"] = true
 	session.Save(c.Request, c.Writer)
 
 	c.JSON(200, person)
+}
+
+func AddQuestion(c *gin.Context) {
+	var question Question
+	// fmt.Println(c.ContentType())
+	c.BindJSON(&question)
+	fmt.Println(question)
+	db.Create(&question)
+	c.Header("access-control-allow-origin", "*")
+	// c.Header("access-control-allow-credentials", "true")
+	c.JSON(200, question)
 }
 
 func CreateQuiz(c *gin.Context) {
 	var quiz Quiz
 	c.BindJSON(&quiz)
 	db.Create(&quiz)
-	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+	c.Header("access-control-allow-origin", "*")
+	// c.Header("access-control-allow-credentials", "true")
 	c.JSON(200, quiz)
 }
 
-func GetPerson(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var person Person
-	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
-		c.AbortWithStatus(404)
-		fmt.Println(err)
-	} else {
-		c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
-		c.JSON(200, person)
-	}
-}
+// func GetPerson(c *gin.Context) {
+// 	id := c.Params.ByName("id")
+// 	var person Person
+// 	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
+// 		c.AbortWithStatus(404)
+// 		fmt.Println(err)
+// 	} else {
+// 		c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+// 		c.JSON(200, person)
+// 	}
+// }
 
 func ViewAllQuizzes(c *gin.Context) {
 	var quiz []Quiz
 	c.Header("access-control-allow-origin", "*")
-	c.Header("access-control-allow-credentials", "true")
+	// c.Header("access-control-allow-credentials", "true")
 	if err := db.Find(&quiz).Error; err != nil {
 		c.AbortWithStatus(404)
 		fmt.Println(err)
 	} else {
 		c.JSON(200, quiz)
+	}
+}
+
+func ListQuestions(c *gin.Context) {
+	var question []Question
+	c.Header("access-control-allow-origin", "*")
+	// c.Header("access-control-allow-credentials", "true")
+	quizid := c.Params.ByName("id")
+	db.Where("quiz_id = ?", quizid).Find(&question)
+	// if err != nil {
+	// 	c.AbortWithStatus(404)
+	// 	fmt.Println("error= ", err)
+	// } else {
+	c.JSON(200, question)
+	// }
+}
+
+func ListPeople(c *gin.Context) {
+	var people []Person
+	c.Header("access-control-allow-origin", "*")
+	// c.Header("access-control-allow-credentials", "true")
+	if err := db.Find(&people).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println("error = ", err)
+	} else {
+		c.JSON(200, people)
 	}
 }

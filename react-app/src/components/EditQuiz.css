@@ -17,7 +17,15 @@
   font-size: large;
 }
 
-.btn {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+table, th, td {
+   border: 1px solid black;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  text-align: center;
+  padding: 15px;
 }

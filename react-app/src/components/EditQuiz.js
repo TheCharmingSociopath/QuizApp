@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import './DeletePerson.css';
+import './EditQuiz.css';
+import AddQuestion from './AddQuestion'
 
-class DeletePerson extends Component {
+class EditQuiz extends Component {
   constructor() {
     super();
     this.state = {
       data: [],
-      id : 1,
+      QuizID : 0,
+      QuestionID: 0,
       submitted: false,
     }
     this.handleChange = this.handleChange.bind(this);
@@ -14,21 +16,23 @@ class DeletePerson extends Component {
 
   // Lifecycle hook, runs after component has mounted onto the DOM structure
   componentDidMount() {
-    const request = new Request('http://localhost:8080/private/people/');
+    this.state.QuizID = this.props.id;
+    const request = new Request('http://localhost:8080/private/question-list/' + this.props.id);
     fetch(request)
       .then(response => response.json())
         .then(data => this.setState({data: data}));
   }
   
   handleChange=(event)=> {
-    this.state.id = event.target.value;
+    this.state.QuestionID = event.target.value;
   }
 
-   delete_person = ()=> {
-    // console.log('rtshsrthtrs', this.state.id)
-    // event.preventDefault();
-    fetch('http://localhost:8080/private/people/' + this.state.id, {
-     method: 'DELETE',
+  delete_question = (event)=> {
+    event.preventDefault();
+    fetch('http://localhost:8080/private/delete-question/' + this.state.QuestionID, {
+     method: 'POST',
+     credentials: 'include',
+    // headers: {"access-control-allow-origin" : "http://localhost:8080"}
    })
       .then(response => {
         if(response.status >= 200 && response.status < 300)
@@ -44,19 +48,21 @@ class DeletePerson extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Delete a Person</h1>
+          <h1 className="App-title">Edit Quiz {this.props.id}</h1>
         </header>
         <div className="formContainer">
-        <form onSubmit={this.delete_person}>
+        <form onSubmit={this.delete_question}>
 
           <table className="table-hover">
             <thead>
               <tr>
                 <th>Select</th>
                 <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>City</th>
+                <th>Question</th>
+                <th>Option A</th>
+                <th>Option B</th>
+                <th>Option C</th>
+                <th>Option D</th>
               </tr>
             </thead>
             <tbody>{this.state.data.map((item, key) => {
@@ -64,16 +70,18 @@ class DeletePerson extends Component {
                     <tr key = {key}>
                         <td><input type="radio" value={item.id} name="select" onClick={this.handleChange}/></td>
                         <td>{item.id}</td>
-                        <td>{item.firstname}</td>
-                        <td>{item.lastname}</td>
-                        <td>{item.city}</td>
+                        <td>{item.question}</td>
+                        <td>{item.opt1}</td>
+                        <td>{item.opt2}</td>
+                        <td>{item.opt3}</td>
+                        <td>{item.opt4}</td>
                     </tr>
                   )
               })}
             </tbody>
         </table>
 
-        <button type="submit" className="btn btn-default">Submit</button>
+        <button type="submit" className="btn btn-default">Delete</button>
        </form>
        </div>
 
@@ -82,4 +90,4 @@ class DeletePerson extends Component {
   }
 }
 
-export default DeletePerson;
+export default EditQuiz;

@@ -1,26 +1,20 @@
 import React, { Component } from 'react';
-import './ViewAllQuizzes.css';
-import AddQuestion from './AddQuestion'
-import EditQuiz from './EditQuiz'
+import './ViewPeople.css';
 
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-
-class ViewAllQuizzes extends Component {
+class ViewPeople extends Component {
   constructor() {
     super();
     this.state = {
       data: [],
       id: -1,
       submitted: false,
-      AddLink: '/AddQuestion/',
-      EditLink: '/EditQuiz/'
     }
     this.handleChange = this.handleChange.bind(this);
   }
 
   // Lifecycle hook, runs after component has mounted onto the DOM structure
   componentDidMount() {
-    const request = new Request('http://localhost:8080/private/quiz-list/');
+    const request = new Request('http://localhost:8080/private/AllPeople/');
     fetch(request)
       .then(response => response.json())
         .then(data => this.setState({data: data}));
@@ -28,13 +22,11 @@ class ViewAllQuizzes extends Component {
 
   handleChange=(event)=> {
     this.state.id = event.target.value;
-    this.setState({AddLink: this.state.AddLink + event.target.value})
-    this.setState({EditLink: this.state.EditLink + event.target.value})
   }
 
-  deleteQuiz = (event)=> {
+  deletePeople = (event)=> {
     event.preventDefault();
-    fetch('http://localhost:8080/private/DeleteQuiz/' + this.state.id, {
+    fetch('http://localhost:8080/private/DeletePerson/' + this.state.id, {
      method: 'POST',
      credentials: 'include',
     // headers: {"access-control-allow-origin" : "http://localhost:8080"}
@@ -49,41 +41,42 @@ class ViewAllQuizzes extends Component {
   }
 
   render() {
-
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">View All Quizzes</h1>
+          <h1 className="App-title">View All People</h1>
         </header>
         <div className="formContainer">
+          <form onSubmit={this.deletePeople}>
             <table className="table-hover">
               <thead>
                 <tr>
                   <th>Select</th>
                   <th>ID</th>
-                  <th>Name</th>
-                  <th>Genre</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email ID</th>
                 </tr>
               </thead>
               <tbody>{this.state.data.map((item, key) => {
                   return (
                       <tr key = {key}>
-                          <td><input type="radio" value={item.id} name="select" onClick={this.handleChange}/></td>
+                          <td><input type="radio" value={item.id} name="select" onClick={this.handleChange} /></td>
                           <td>{item.id}</td>
-                          <td>{item.name}</td>
-                          <td>{item.genre}</td>
+                          <td>{item.firstname}</td>
+                          <td>{item.lastname}</td>
+                          <td>{item.email}</td>
                       </tr>
                     )
                 })}
               </tbody>
-          </table>
-          <button type="submit" onClick={this.deleteQuiz} className="btn btn-default">Delete</button>
-          <Link to={this.state.AddLink} > <button type="submit" className="btn btn-default">Add Questions</button></Link>
-          <Link to={this.state.EditLink} > <button type="submit" className="btn btn-default">Edit Quiz</button></Link>
-       </div>
+            </table>
+            <button type="submit" className="btn btn-default">Delete</button>
+          </form>
+        </div>
       </div>
     );
   }
 }
 
-export default ViewAllQuizzes;
+export default ViewPeople;

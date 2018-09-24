@@ -9,12 +9,12 @@ class CreateQuiz extends Component {
     this.state = {
       formData: {
         Name: "",
-        Genere: "",
+        Genre: "",
       },
       submitted: false,
     }
-    this.handleNChange = this.handleNChange.bind(this); //first name
-    this.handleGChange = this.handleGChange.bind(this); //password
+    this.handleNChange = this.handleNChange.bind(this); //quiz name
+    this.handleGChange = this.handleGChange.bind(this); //genere
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -24,9 +24,10 @@ class CreateQuiz extends Component {
 
   handleSubmit (event) {
     event.preventDefault();
-    fetch('http://localhost:8080/CreateQuiz/', {
+    fetch('http://localhost:8080/private/CreateQuiz/', {
      method: 'POST',
     //  mode: 'no-cors',
+    // credentials: 'include',
      body: JSON.stringify(this.state.formData),
    })
       .then(response => {
@@ -40,7 +41,7 @@ class CreateQuiz extends Component {
     this.state.formData.Name = event.target.value;
   }
   handleGChange(event) {
-    this.state.formData.Genere = event.target.value;
+    this.state.formData.Genre = event.target.value;
   }
 
   render() {
@@ -58,8 +59,8 @@ class CreateQuiz extends Component {
                 <input type="text" className="form-control" value={this.state.Name} onChange={this.handleNChange}/>
             </div>
             <div className="form-group">
-                <label>Genere</label>
-                <input type="text" className="form-control" value={this.state.Genere} onChange={this.handleGChange}/>
+                <label>Genre</label>
+                <input type="text" className="form-control" value={this.state.Genre} onChange={this.handleGChange}/>
             </div>
             <button type="submit" className="btn btn-default">Submit</button>
           </form>

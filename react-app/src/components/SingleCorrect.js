@@ -3,7 +3,7 @@ import './SignUp.css';
 import PropTypes from 'prop-types';
 
 
-class SignUp extends Component {
+class SingleCorrect extends Component {
   constructor() {
     super();
     this.state = {
@@ -106,4 +106,4 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default SingleCorrect;
