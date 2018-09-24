@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './ViewAllQuizzes.css';
-import AddQuestion from './AddQuestion'
 import EditQuiz from './EditQuiz'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -12,7 +11,6 @@ class ViewAllQuizzes extends Component {
       data: [],
       id: -1,
       submitted: false,
-      AddLink: '/AddQuestion/',
       EditLink: '/EditQuiz/'
     }
     this.handleChange = this.handleChange.bind(this);
@@ -28,7 +26,6 @@ class ViewAllQuizzes extends Component {
 
   handleChange=(event)=> {
     this.state.id = event.target.value;
-    this.setState({AddLink: this.state.AddLink + event.target.value})
     this.setState({EditLink: this.state.EditLink + event.target.value})
   }
 
@@ -78,7 +75,6 @@ class ViewAllQuizzes extends Component {
               </tbody>
           </table>
           <button type="submit" onClick={this.deleteQuiz} className="btn btn-default">Delete</button>
-          <Link to={this.state.AddLink} > <button type="submit" className="btn btn-default">Add Questions</button></Link>
           <Link to={this.state.EditLink} > <button type="submit" className="btn btn-default">Edit Quiz</button></Link>
        </div>
       </div>

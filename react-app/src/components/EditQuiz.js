@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './EditQuiz.css';
 import AddQuestion from './AddQuestion'
 
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+
 class EditQuiz extends Component {
   constructor() {
     super();
@@ -80,7 +82,7 @@ class EditQuiz extends Component {
               })}
             </tbody>
         </table>
-
+        <Link to={'/AddQuestion/' + this.state.QuizID} > <button type="submit" className="btn btn-default">Add Questions</button></Link>
         <button type="submit" className="btn btn-default">Delete</button>
        </form>
        </div>
