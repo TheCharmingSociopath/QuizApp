@@ -61,7 +61,7 @@ func main() {
 		private.POST("/CreateQuiz/", CreateQuiz)
 		private.GET("/AllPeople/", ListPeople)
 		private.GET("/GetQuestion/:id", GetQuestion)
-		private.PUT("/UpdateQuestion/:id", UpdateQuestion)
+		private.POST("/UpdateQuestion/:id", UpdateQuestion)
 		private.POST("/DeleteQuiz/:id", DeleteQuiz)
 		private.POST("/DeletePerson/:id", DeletePerson)
 		private.POST("/AddQuestion/", AddQuestion)

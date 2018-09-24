@@ -66,13 +66,13 @@ class EditQuestion extends Component {
     
             QuizId: data.QuizID,
           }, QuestionID: data.id});
-          console.log("state: ", this.state,"data ", data)
         });
   }
   
   handleSubmit (event) {
+    console.log(this.state.formData)
     event.preventDefault();
-    fetch('http://localhost:8080/private/UpdateQuestion/', {
+    fetch('http://localhost:8080/private/UpdateQuestion/' + this.state.QuestionID, {
      method: 'POST',
     //  mode: 'no-cors',
      body: JSON.stringify(this.state.formData),
