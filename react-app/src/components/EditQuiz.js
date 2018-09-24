@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './EditQuiz.css';
 import AddQuestion from './AddQuestion'
+import EditQuestion from './EditQuestion'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -26,7 +27,7 @@ class EditQuiz extends Component {
   }
   
   handleChange=(event)=> {
-    this.state.QuestionID = event.target.value;
+    this.setState({QuestionID: event.target.value});
   }
 
   delete_question = (event)=> {
@@ -83,6 +84,7 @@ class EditQuiz extends Component {
             </tbody>
         </table>
         <Link to={'/AddQuestion/' + this.state.QuizID} > <button type="submit" className="btn btn-default">Add Questions</button></Link>
+        <Link to={'/EditQuestion/' + this.state.QuestionID} > <button type="submit" className="btn btn-default">Edit Question</button></Link>
         <button type="submit" className="btn btn-default">Delete</button>
        </form>
        </div>

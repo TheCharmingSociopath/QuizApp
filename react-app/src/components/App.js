@@ -7,6 +7,8 @@ import CreateQuiz from './CreateQuiz';
 import ViewPeople from './ViewPeople';
 import AddQuestion from './AddQuestion';
 import EditQuiz from './EditQuiz';
+import EditQuestion from './EditQuestion';
+
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 class App extends Component {
@@ -36,6 +38,7 @@ class App extends Component {
                  <Route exact path='/ViewPeople' component={ViewPeople} />
                  <Route exact path='/AddQuestion/:id' render={({match}) => <AddQuestion id={match.params.id} />} />
                  <Route exact path='/EditQuiz/:id' render={({match}) => <EditQuiz id={match.params.id} />} />
+                 <Route exact path='/EditQuestion/:id' render={({match}) => <EditQuestion id={match.params.id} />} />
             </Switch>
           </div>
         </Router>

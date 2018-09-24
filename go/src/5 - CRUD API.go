@@ -56,19 +56,19 @@ func main() {
 	r.POST("/authenticate/", Login)
 
 	private := r.Group("/private")
-	private.Use(AuthRequired())
 	{
 		private.GET("/quiz-list/", ViewAllQuizzes)
 		private.POST("/CreateQuiz/", CreateQuiz)
 		private.GET("/AllPeople/", ListPeople)
-		// r.GET("/people/:id", GetPerson)
-		// r.PUT("/people/:id", UpdatePerson)
+		private.GET("/GetQuestion/:id", GetQuestion)
+		private.PUT("/UpdateQuestion/:id", UpdateQuestion)
 		private.POST("/DeleteQuiz/:id", DeleteQuiz)
 		private.POST("/DeletePerson/:id", DeletePerson)
 		private.POST("/AddQuestion/", AddQuestion)
 		private.POST("/delete-question/:id", DeleteQuestion)
 		private.GET("/question-list/:id", ListQuestions)
 	}
+	private.Use(AuthRequired())
 
 	r.Run(":8080") // Run on port 8080
 }
@@ -144,18 +144,18 @@ func DeletePerson(c *gin.Context) {
 	c.JSON(200, gin.H{"id #" + id: "deleted"})
 }
 
-// func UpdatePerson(c *gin.Context) {
-// 	var person Person
-// 	id := c.Params.ByName("id")
-// 	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
-// 		c.AbortWithStatus(404)
-// 		fmt.Println(err)
-// 	}
-// 	c.BindJSON(&person)
-// 	db.Save(&person)
-// 	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
-// 	c.JSON(200, person)
-// }
+func UpdateQuestion(c *gin.Context) {
+	var question Question
+	id := c.Params.ByName("id")
+	if err := db.Where("id = ?", id).First(&question).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	}
+	c.BindJSON(&question)
+	db.Save(&question)
+	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+	c.JSON(200, question)
+}
 
 func CreateAccount(c *gin.Context) {
 	var person Person
@@ -192,17 +192,19 @@ func CreateQuiz(c *gin.Context) {
 	c.JSON(200, quiz)
 }
 
-// func GetPerson(c *gin.Context) {
-// 	id := c.Params.ByName("id")
-// 	var person Person
-// 	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
-// 		c.AbortWithStatus(404)
-// 		fmt.Println(err)
-// 	} else {
-// 		c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
-// 		c.JSON(200, person)
-// 	}
-// }
+func GetQuestion(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var question Question
+	// fmt.Println("id = ", id)
+	if err := db.Where("id = ?", id).First(&question).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println("err= ", err)
+	} else {
+		c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+		c.JSON(200, question)
+	}
+	// fmt.Println("GetQuestion", question)
+}
 
 func ViewAllQuizzes(c *gin.Context) {
 	var quiz []Quiz
