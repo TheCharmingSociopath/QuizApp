@@ -37,9 +37,7 @@ class TakeQuizLink extends Component {
         const request = new Request('http://localhost:8080/private/getPlayerId/');
         fetch(request)
           .then(response => response.json())
-            .then(data => { this.setState({playerId: data}); console.log(this.state.playerId) });
-        this.context.router.history.push("/PlayerHome/" + this.state.playerId);        
-        console.log(this.state.playerId);
+            .then(data => { this.state.playerId = data; this.context.router.history.push("/PlayerHome/" + this.state.playerId); });
       }
       
       updateQuestion = (event)=> {

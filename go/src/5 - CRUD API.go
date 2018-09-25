@@ -13,7 +13,7 @@ import (
 var db *gorm.DB // declaring the db globally
 var err error
 var store = sessions.NewCookieStore([]byte("secret"))
-var userID = 0
+var userID uint
 var firstName = ""
 var loggedIn = false
 
@@ -109,6 +109,10 @@ func Login(c *gin.Context) {
 		session.Values["firstName"] = person.FirstName
 		session.Save(c.Request, c.Writer)
 
+		userID = person.ID
+		firstName = person.FirstName
+		loggedIn = true
+
 		fmt.Println("login", session.Values, err)
 
 		c.JSON(200, person)
@@ -172,15 +176,20 @@ func CreateAccount(c *gin.Context) {
 	session.Values["logged-in"] = true
 	session.Save(c.Request, c.Writer)
 
+	userID = person.ID
+	firstName = person.FirstName
+	loggedIn = true
+
 	c.JSON(200, person)
 }
 
 func getPlayerId(c *gin.Context) {
 	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
-	session, _ := store.Get(c.Request, "session-name")
-	fmt.Println("getID ", session.Values)
-	id := session.Values["id"]
-	c.JSON(200, id)
+	// session, _ := store.Get(c.Request, "session-name")
+	// fmt.Println("getID ", session.Values)
+	// id := session.Values["id"]
+	fmt.Println(userID)
+	c.JSON(200, userID)
 }
 
 func AddQuestion(c *gin.Context) {
