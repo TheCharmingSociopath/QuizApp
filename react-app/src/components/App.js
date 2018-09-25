@@ -8,6 +8,9 @@ import ViewPeople from './ViewPeople';
 import AddQuestion from './AddQuestion';
 import EditQuiz from './EditQuiz';
 import EditQuestion from './EditQuestion';
+import PlayerHome from './PlayerHome.js';
+import ViewQuizzesPlayer from './ViewQuizzesPlayer';
+import TakeQuiz from './TakeQuiz';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -36,9 +39,12 @@ class App extends Component {
                  <Route exact path='/ViewAllQuizzes' component={ViewAllQuizzes} />
                  <Route exact path='/CreateQuiz' component={CreateQuiz} />
                  <Route exact path='/ViewPeople' component={ViewPeople} />
-                 <Route exact path='/AddQuestion/:id' render={({match}) => <AddQuestion id={match.params.id} />} />
-                 <Route exact path='/EditQuiz/:id' render={({match}) => <EditQuiz id={match.params.id} />} />
-                 <Route exact path='/EditQuestion/:id' render={({match}) => <EditQuestion id={match.params.id} />} />
+                 <Route exact path='/AddQuestion/:id' component={AddQuestion} />
+                 <Route exact path='/EditQuiz/:id' component={EditQuiz} />
+                 <Route exact path='/EditQuestion/:id' component={EditQuestion} />
+                 <Route exact path='/PlayerHome/:id' component={PlayerHome} />
+                 <Route exact path='/ViewQuizzesPlayer' component={ViewQuizzesPlayer} />
+                 <Route exact path='/TakeQuiz/:id' component={TakeQuiz} />
             </Switch>
           </div>
         </Router>

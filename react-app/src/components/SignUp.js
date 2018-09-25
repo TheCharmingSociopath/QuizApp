@@ -38,7 +38,16 @@ class SignUp extends Component {
       .then(response => {
         if(response.status >= 200 && response.status < 300) {
           this.setState({submitted: true});
-          this.context.router.history.push("/");
+          response.json()
+            .then(
+              data => {
+                if (data.email == "aditya"){
+                  this.context.router.history.push("/");
+                } else {
+                  this.context.router.history.push("/PlayerHome/" + data.id);
+                }
+              }
+            )
         }
       });
   }

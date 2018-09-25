@@ -35,10 +35,13 @@ class Login extends Component {
         response.json()
             .then(
                 data => {
-                    console.log(data)
-                    if (data == "Authenticated") {
-                        console.log('yes');
+                    if (data["email"] == this.state.formData.email && data["email"] == "aditya") {
                         this.context.router.history.push("/");
+
+                    } else if (data["email"] == this.state.formData.email) {
+                        var x = data.id;
+                        this.context.router.history.push("/PlayerHome/" + x);
+
                     } else {
                         console.log('no');
                         this.context.router.history.push("/Login");

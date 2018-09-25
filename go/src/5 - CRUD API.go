@@ -13,6 +13,9 @@ import (
 var db *gorm.DB // declaring the db globally
 var err error
 var store = sessions.NewCookieStore([]byte("secret"))
+var userID = 0
+var firstName = ""
+var loggedIn = false
 
 type Person struct {
 	ID        uint   `json:"id"`
@@ -61,6 +64,7 @@ func main() {
 		private.POST("/CreateQuiz/", CreateQuiz)
 		private.GET("/AllPeople/", ListPeople)
 		private.GET("/GetQuestion/:id", GetQuestion)
+		private.GET("/getPlayerId/", getPlayerId)
 		private.POST("/UpdateQuestion/:id", UpdateQuestion)
 		private.POST("/DeleteQuiz/:id", DeleteQuiz)
 		private.POST("/DeletePerson/:id", DeletePerson)
@@ -101,14 +105,13 @@ func Login(c *gin.Context) {
 
 	if person.Email == received_person.Email && person.Password == received_person.Password {
 		session, err := store.Get(c.Request, "session-name")
-		session.Values["email"] = person.Email
 		session.Values["id"] = person.ID
-		session.Values["logged-in"] = true
+		session.Values["firstName"] = person.FirstName
 		session.Save(c.Request, c.Writer)
 
 		fmt.Println("login", session.Values, err)
 
-		c.JSON(200, "Authenticated")
+		c.JSON(200, person)
 	} else {
 		c.JSON(200, "User Not Found")
 	}
@@ -170,6 +173,14 @@ func CreateAccount(c *gin.Context) {
 	session.Save(c.Request, c.Writer)
 
 	c.JSON(200, person)
+}
+
+func getPlayerId(c *gin.Context) {
+	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+	session, _ := store.Get(c.Request, "session-name")
+	fmt.Println("getID ", session.Values)
+	id := session.Values["id"]
+	c.JSON(200, id)
 }
 
 func AddQuestion(c *gin.Context) {

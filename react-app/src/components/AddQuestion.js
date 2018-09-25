@@ -45,7 +45,7 @@ class AddQuestion extends Component {
     }
 
     componentDidMount() {
-        this.state.formData.QuizId = this.props.id;
+        this.state.formData.QuizId = this.props.match.params.id;
       }
     
     handleSubmit (event) {
@@ -107,7 +107,7 @@ class AddQuestion extends Component {
       return (
         <div className="App">
           <header className="App-header">
-            <h1 className="App-title">Adding a question to quiz ID: {this.props.id} </h1>
+            <h1 className="App-title">Adding a question to quiz ID: {this.props.match.params.id} </h1>
           </header>
           <br/><br/>
           <div className="formContainer">

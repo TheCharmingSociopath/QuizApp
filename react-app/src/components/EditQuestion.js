@@ -47,7 +47,7 @@ class EditQuestion extends Component {
   }
 
   componentDidMount() {
-    const request = new Request('http://localhost:8080/private/GetQuestion/' + this.props.id);
+    const request = new Request('http://localhost:8080/private/GetQuestion/' + this.props.match.params.id);
     fetch(request)
       .then(response => response.json())
         .then(data => {
@@ -156,7 +156,7 @@ class EditQuestion extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Edit Question: {this.props.id} </h1>
+          <h1 className="App-title">Edit Question: {this.props.match.params.id} </h1>
         </header>
         <br/><br/>
         <div className="formContainer">

@@ -19,8 +19,8 @@ class EditQuiz extends Component {
 
   // Lifecycle hook, runs after component has mounted onto the DOM structure
   componentDidMount() {
-    this.state.QuizID = this.props.id;
-    const request = new Request('http://localhost:8080/private/question-list/' + this.props.id);
+    this.state.QuizID = this.props.match.params.id;
+    const request = new Request('http://localhost:8080/private/question-list/' + this.props.match.params.id);
     fetch(request)
       .then(response => response.json())
         .then(data => this.setState({data: data}));
@@ -51,7 +51,7 @@ class EditQuiz extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Edit Quiz {this.props.id}</h1>
+          <h1 className="App-title">Edit Quiz {this.props.match.params.id}</h1>
         </header>
         <div className="formContainer">
         <form onSubmit={this.delete_question}>
