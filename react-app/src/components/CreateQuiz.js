@@ -9,7 +9,7 @@ class CreateQuiz extends Component {
     this.state = {
       formData: {
         Name: "",
-        Genre: "",
+        Genre: "Science",
       },
       submitted: false,
     }
@@ -24,6 +24,7 @@ class CreateQuiz extends Component {
 
   handleSubmit (event) {
     event.preventDefault();
+    console.log(this.state.Genre)
     fetch('http://localhost:8080/private/CreateQuiz/', {
      method: 'POST',
     //  mode: 'no-cors',
@@ -42,6 +43,7 @@ class CreateQuiz extends Component {
   }
   handleGChange(event) {
     this.state.formData.Genre = event.target.value;
+    console.log(event.target.value, this.state.formData.Genre)
   }
 
   render() {

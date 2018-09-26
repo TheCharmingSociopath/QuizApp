@@ -90,14 +90,21 @@ class TakeQuizLink extends Component {
       
       updateQuestion = (event)=> {
         var qno = this.state.questionNumber;
-        if(this.state.selection1 == this.state.data[qno]["ans1"] && this.state.selection2 == this.state.data[qno]["ans2"] &&
-        this.state.selection3 == this.state.data[qno]["ans3"] && this.state.selection4 == this.state.data[qno]["ans4"]){
+
+        if(this.state.selection1 == this.state.data[this.state.questionNumber]["ans1"] && this.state.selection2 == this.state.data[this.state.questionNumber]["ans2"] &&
+        this.state.selection3 == this.state.data[this.state.questionNumber]["ans3"] && this.state.selection4 == this.state.data[this.state.questionNumber]["ans4"]){
+
           this.state.requestData.Score = this.state.requestData.Score + 10;
-          this.setState({selection1: false});
-          this.setState({selection2: false});
-          this.setState({selection3: false});
-          this.setState({selection4: false});
         }
+          // this.setState({selection1: false});
+          // this.setState({selection2: false});
+          // this.setState({selection3: false});
+          // this.setState({selection4: false});
+          this.state.selection1 = false;
+          this.state.selection2 = false;
+          this.state.selection3 = false;
+          this.state.selection4 = false;
+
         this.setState({questionNumber : this.state.questionNumber + 1});
         if(this.state.questionNumber == this.state.data.length) {
           this.setState({quizOver: true});

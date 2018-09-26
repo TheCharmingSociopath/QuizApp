@@ -88,6 +88,7 @@ class EditQuestion extends Component {
       .then(response => {
         if(response.status >= 200 && response.status < 300) {
           this.setState({submitted: true});
+          this.context.router.history.push('/EditQuiz/' + this.state.formData.QuizId);
         }
       });
   }
@@ -128,7 +129,7 @@ class EditQuestion extends Component {
     this.state.formData.QuestionType = "Image";
   }
   handleVTChange(event) {
-    this.state.formData.QuestionType = "Video";
+    this.state.formData.QuestionType = "Audio/Video";
   }
   makeOpt1True(event) {
     let x = {...this.state.formData,
@@ -246,7 +247,7 @@ class EditQuestion extends Component {
                        <div className="dropdown-content">
                            <a value="Multiple Correct" onClick={this.handleMCTChange} href="#">Multiple Correct Type</a>
                            <a value="Image" onClick={this.handleITChange} href="#">Image</a>
-                           <a value="Video" onClick={this.handleVTChange} href="#">Video</a>
+                           <a value="Audio/Video" onClick={this.handleVTChange} href="#">Audio/Video</a>
                        </div>
                   </div>
               </div>
