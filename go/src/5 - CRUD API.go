@@ -15,6 +15,7 @@ var err error
 var store = sessions.NewCookieStore([]byte("secret"))
 var userID uint
 var firstName = ""
+var email = ""
 var loggedIn = false
 
 type Person struct {
@@ -42,6 +43,14 @@ type Question struct {
 	Ans4     bool   `json:"ans4"`
 	QuizId   uint   `json:"QuizID,string"`
 }
+type History struct {
+	ID         uint   `json:"id"`
+	PlayerID   uint   `json:"playerId"`
+	PlayerName string `json:"playername"`
+	QuizName   string `json:"quizname"`
+	QuizID     uint   `json:"QuizId,string"`
+	Score      uint   `json:"score"`
+}
 
 func main() {
 	db, err = gorm.Open("sqlite3", "./gorm.db")
@@ -53,6 +62,7 @@ func main() {
 	db.AutoMigrate(&Person{})
 	db.AutoMigrate(&Quiz{})
 	db.AutoMigrate(&Question{})
+	db.AutoMigrate(&History{})
 	r := gin.Default()
 
 	r.POST("/people", CreateAccount)
@@ -65,11 +75,15 @@ func main() {
 		private.GET("/AllPeople/", ListPeople)
 		private.GET("/GetQuestion/:id", GetQuestion)
 		private.GET("/getPlayerId/", getPlayerId)
+		private.GET("/getPlayerName/", getPlayerName)
+		private.GET("/getPlayerEmail/", getPlayerEmail)
+		private.GET("/getQuizName/:id", getQuizName)
 		private.POST("/UpdateQuestion/:id", UpdateQuestion)
 		private.POST("/DeleteQuiz/:id", DeleteQuiz)
 		private.POST("/DeletePerson/:id", DeletePerson)
 		private.POST("/AddQuestion/", AddQuestion)
 		private.POST("/delete-question/:id", DeleteQuestion)
+		private.POST("/AddScore/", AddScore)
 		private.GET("/question-list/:id", ListQuestions)
 	}
 	private.Use(AuthRequired())
@@ -112,6 +126,7 @@ func Login(c *gin.Context) {
 		userID = person.ID
 		firstName = person.FirstName
 		loggedIn = true
+		email = person.Email
 
 		fmt.Println("login", session.Values, err)
 
@@ -164,6 +179,19 @@ func UpdateQuestion(c *gin.Context) {
 	c.JSON(200, question)
 }
 
+func getQuizName(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var quiz Quiz
+	if err := db.Where("id = ?", id).First(&quiz).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println("err= ", err)
+	} else {
+		c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+		c.JSON(200, quiz.Name)
+	}
+	// fmt.Println("GetQuestion", question)
+}
+
 func CreateAccount(c *gin.Context) {
 	var person Person
 	c.BindJSON(&person)
@@ -179,6 +207,7 @@ func CreateAccount(c *gin.Context) {
 	userID = person.ID
 	firstName = person.FirstName
 	loggedIn = true
+	email = person.Email
 
 	c.JSON(200, person)
 }
@@ -188,8 +217,26 @@ func getPlayerId(c *gin.Context) {
 	// session, _ := store.Get(c.Request, "session-name")
 	// fmt.Println("getID ", session.Values)
 	// id := session.Values["id"]
-	fmt.Println(userID)
+	fmt.Println("get player is", userID)
 	c.JSON(200, userID)
+}
+
+func getPlayerEmail(c *gin.Context) {
+	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+	// session, _ := store.Get(c.Request, "session-name")
+	// fmt.Println("getID ", session.Values)
+	// id := session.Values["id"]
+	fmt.Println("get player email", email)
+	c.JSON(200, email)
+}
+
+func getPlayerName(c *gin.Context) {
+	c.Header("access-control-allow-origin", "*") // Why am I doing this? Find out. Try running with this line commented
+	// session, _ := store.Get(c.Request, "session-name")
+	// fmt.Println("getID ", session.Values)
+	// id := session.Values["id"]
+	fmt.Println("get PLayer Name", firstName)
+	c.JSON(200, firstName)
 }
 
 func AddQuestion(c *gin.Context) {
@@ -210,6 +257,17 @@ func CreateQuiz(c *gin.Context) {
 	c.Header("access-control-allow-origin", "*")
 	// c.Header("access-control-allow-credentials", "true")
 	c.JSON(200, quiz)
+}
+
+func AddScore(c *gin.Context) {
+	fmt.Println("Add Score")
+	var history History
+	c.BindJSON(&history)
+	db.Create(&history)
+	c.Header("access-control-allow-origin", "*")
+	// c.Header("access-control-allow-credentials", "true")
+	fmt.Println("Add Score, history", history)
+	c.JSON(200, history)
 }
 
 func GetQuestion(c *gin.Context) {

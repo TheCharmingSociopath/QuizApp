@@ -11,6 +11,7 @@ import EditQuestion from './EditQuestion';
 import PlayerHome from './PlayerHome.js';
 import ViewQuizzesPlayer from './ViewQuizzesPlayer';
 import TakeQuiz from './TakeQuiz';
+import Rankings from './Rankings';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -45,6 +46,7 @@ class App extends Component {
                  <Route exact path='/PlayerHome/:id' component={PlayerHome} />
                  <Route exact path='/ViewQuizzesPlayer' component={ViewQuizzesPlayer} />
                  <Route exact path='/TakeQuiz/:id' component={TakeQuiz} />
+                 <Route exact path='/Rankings' component={Rankings} />
             </Switch>
           </div>
         </Router>
