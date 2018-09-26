@@ -37,13 +37,16 @@ class SignUp extends Component {
    })
       .then(response => {
         if(response.status >= 200 && response.status < 300) {
-          this.setState({submitted: true});
           response.json()
             .then(
               data => {
-                if (data.email == "aditya"){
+                if(data == "already exists") {
+                  window.confirm("Email already exists.");
+              } else if (data.email == "aditya"){
+                  this.setState({submitted: true});
                   this.context.router.history.push("/");
                 } else {
+                  this.setState({submitted: true});
                   this.context.router.history.push("/PlayerHome/" + data.id);
                 }
               }
