@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './TakeQuiz.css'
 import PropTypes from 'prop-types';
+import ReactPlayer from 'react-player'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -23,9 +24,6 @@ class TakeQuizLink extends Component {
           selection3: false,
           selection4: false,
           quizOver: false,
-          playerId: 0,
-          quizname: "",
-          PlayerName: "",
         }
       }
 
@@ -60,6 +58,7 @@ class TakeQuizLink extends Component {
           this.setState({requestData: y});
         });
     }
+   
       // Lifecycle hook, runs after component has mounted onto the DOM structure
       componentDidMount() {
         const request = new Request('http://localhost:8080/private/question-list/' + this.props.match.params.id);
@@ -69,7 +68,8 @@ class TakeQuizLink extends Component {
         this.getPlayerId();
         this.getQuizName();
         this.getPlayerName();
-        this.state.requestData.QuizID = this.props.match.params.id;                     
+        this.state.requestData.QuizID = this.props.match.params.id;
+        console.log(this.state.requestData);                 
       }
 
       redirectToHome = (event) => {
@@ -82,7 +82,7 @@ class TakeQuizLink extends Component {
           })
               .then(response => {
                 if(response.status >= 200 && response.status < 300) {
-                  this.context.router.history.push("/PlayerHome/" + this.state.playerId)
+                  this.context.router.history.push("/PlayerHome/" + this.state.requestData.PlayerID)
                 }
 
               });
@@ -126,6 +126,20 @@ class TakeQuizLink extends Component {
           {this.state.data.length > 0 && this.state.questionNumber < this.state.data.length &&
             <div>
               <h3> Q. {this.state.data[this.state.questionNumber]["question"]} </h3>
+              { this.state.data[this.state.questionNumber]["QuestionType"] == "Image" &&
+                <div>
+                    <br/>
+                    <img src={this.state.data[this.state.questionNumber]["URL"]}></img>
+                    <br/>
+                  </div>
+              }
+              { this.state.data[this.state.questionNumber]["QuestionType"] == "Video" &&
+                <div>
+                  <br/>
+                    <ReactPlayer url={this.state.data[this.state.questionNumber]["URL"]} playing />
+                  <br/>
+                  </div>
+              }
 
               <button type="submit" className="btn btn-default" onClick={this.HandleSelection1} >
                 <h5> {this.state.data[this.state.questionNumber]["opt1"]} </h5>
@@ -143,6 +157,8 @@ class TakeQuizLink extends Component {
               <button type="submit" className="btn btn-default" onClick={this.HandleSelection4} >
                 <h5> {this.state.data[this.state.questionNumber]["opt4"]} </h5>
               </button>
+              <br/>
+              
               <button type="submit" className="btn btn-default" onClick={this.updateQuestion}>Next</button>
             </div>
           }

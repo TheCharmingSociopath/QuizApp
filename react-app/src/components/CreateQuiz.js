@@ -59,8 +59,13 @@ class CreateQuiz extends Component {
                 <input type="text" className="form-control" value={this.state.Name} onChange={this.handleNChange}/>
             </div>
             <div className="form-group">
-                <label>Genre</label>
-                <input type="text" className="form-control" value={this.state.Genre} onChange={this.handleGChange}/>
+                <label>Genre</label> <br/>
+                <select onChange={this.handleGChange} value={this.state.value}>
+                  <option value="Science">Science</option>
+                  <option value="Math">Mathematics</option>
+                  <option value="TV Series">TV Series</option>
+                  <option value="IIIT">IIIT</option>
+                </select>
             </div>
             <button type="submit" className="btn btn-default">Submit</button>
           </form>

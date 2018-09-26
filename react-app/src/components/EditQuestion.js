@@ -23,6 +23,8 @@ class EditQuestion extends Component {
         ans4: false, //True/False
 
         QuizId: 0,
+        QuestionType: "",
+        URL: "",
       },
       QuestionID: 0,
       submitted: false,
@@ -36,6 +38,10 @@ class EditQuestion extends Component {
     this.makeOpt2True = this.makeOpt2True.bind(this)
     this.makeOpt3True = this.makeOpt3True.bind(this)
     this.makeOpt4True = this.makeOpt4True.bind(this)
+    this.handleURLChange = this.handleURLChange.bind(this); //URL
+    this.handleMCTChange = this.handleMCTChange.bind(this)
+    this.handleITChange = this.handleITChange.bind(this)
+    this.handleVTChange = this.handleVTChange.bind(this)
     this.makeOpt1False = this.makeOpt1False.bind(this)
     this.makeOpt2False = this.makeOpt2False.bind(this)
     this.makeOpt3False = this.makeOpt3False.bind(this)
@@ -51,6 +57,7 @@ class EditQuestion extends Component {
     fetch(request)
       .then(response => response.json())
         .then(data => {
+          console.log(data);
           this.setState({formData: {
             Question: data.question,
     
@@ -65,6 +72,7 @@ class EditQuestion extends Component {
             ans4: data.ans4, //True/False
     
             QuizId: data.QuizID,
+            QuestionType: data.QuestionType,
           }, QuestionID: data.id});
         });
   }
@@ -90,6 +98,9 @@ class EditQuestion extends Component {
             "Question" : event.target.value}
     this.setState({formData : x});
   }
+  handleURLChange(event) {
+    this.state.formData.URL = event.target.value;
+  }
   handleO1Change(event) {
     let x = {...this.state.formData,
       "opt1" : event.target.value}
@@ -109,6 +120,15 @@ class EditQuestion extends Component {
     let x = {...this.state.formData,
       "opt4" : event.target.value}
     this.setState({formData : x});
+  }
+  handleMCTChange(event) {
+    this.state.formData.QuestionType = "Multiple Correct Type";
+  }
+  handleITChange(event) {
+    this.state.formData.QuestionType = "Image";
+  }
+  handleVTChange(event) {
+    this.state.formData.QuestionType = "Video";
   }
   makeOpt1True(event) {
     let x = {...this.state.formData,
@@ -166,6 +186,11 @@ class EditQuestion extends Component {
                 <input type="text" className="form-control" value={this.state.formData.Question} onChange={this.handleQChange}/>
             </div>
 
+             <div className="form-group">
+                  <label>URL (Only in case of Image or Video)</label>
+                  <input type="text" className="form-control" value={this.state.formData.URL} onChange={this.handleURLChange}/>
+              </div>
+
             <div className="form-group">
                 <label>Option 1</label>
                 <input type="text" className="form-control" value={this.state.formData.opt1} onChange={this.handleO1Change}/>
@@ -213,6 +238,18 @@ class EditQuestion extends Component {
                      </div>
                 </div>
             </div>
+
+             <div className="form-group">
+                  <label>Question Type</label> <br/>
+                  <div className="dropdown">
+                       <button className="dropbtn">{this.state.formData.QuestionType}</button>
+                       <div className="dropdown-content">
+                           <a value="Multiple Correct" onClick={this.handleMCTChange} href="#">Multiple Correct Type</a>
+                           <a value="Image" onClick={this.handleITChange} href="#">Image</a>
+                           <a value="Video" onClick={this.handleVTChange} href="#">Video</a>
+                       </div>
+                  </div>
+              </div>
 
             <button type="submit" className="btn btn-default">Submit</button>
           </form>

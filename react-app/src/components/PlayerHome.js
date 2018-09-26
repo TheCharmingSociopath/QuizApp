@@ -11,7 +11,6 @@ class PlayerHome extends Component {
         this.state = {
           playerId: 0,
           playerName: "",
-          playerEmail: "",
         }
       }
 
@@ -25,7 +24,6 @@ class PlayerHome extends Component {
             this.getPlayerId();
         }
     }
-
 
     getPlayerId = () => {
         const request = new Request('http://localhost:8080/private/getPlayerId/');

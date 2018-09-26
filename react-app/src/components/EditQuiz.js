@@ -62,10 +62,12 @@ class EditQuiz extends Component {
                 <th>Select</th>
                 <th>ID</th>
                 <th>Question</th>
+                <th>URL</th>
                 <th>Option A</th>
                 <th>Option B</th>
                 <th>Option C</th>
                 <th>Option D</th>
+                <th>Question Type</th>
               </tr>
             </thead>
             <tbody>{this.state.data.map((item, key) => {
@@ -74,10 +76,12 @@ class EditQuiz extends Component {
                         <td><input type="radio" value={item.id} name="select" onClick={this.handleChange}/></td>
                         <td>{item.id}</td>
                         <td>{item.question}</td>
+                        <td>{item.URL}</td>
                         <td>{item.opt1}</td>
                         <td>{item.opt2}</td>
                         <td>{item.opt3}</td>
                         <td>{item.opt4}</td>
+                        <td>{item.QuestionType}</td>
                     </tr>
                   )
               })}

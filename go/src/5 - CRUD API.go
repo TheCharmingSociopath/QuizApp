@@ -31,17 +31,19 @@ type Quiz struct {
 	Genre string `json:"genre"`
 }
 type Question struct {
-	ID       uint   `json:"id"`
-	Question string `json:"question"`
-	Opt1     string `json:"opt1"`
-	Opt2     string `json:"opt2"`
-	Opt3     string `json:"opt3"`
-	Opt4     string `json:"opt4"`
-	Ans1     bool   `json:"ans1"`
-	Ans2     bool   `json:"ans2"`
-	Ans3     bool   `json:"ans3"`
-	Ans4     bool   `json:"ans4"`
-	QuizId   uint   `json:"QuizID,string"`
+	ID       		uint   `json:"id"`
+	Question 		string `json:"question"`
+	Opt1     		string `json:"opt1"`
+	Opt2     		string `json:"opt2"`
+	Opt3     		string `json:"opt3"`
+	Opt4     		string `json:"opt4"`
+	Ans1     		bool   `json:"ans1"`
+	Ans2     		bool   `json:"ans2"`
+	Ans3     		bool   `json:"ans3"`
+	Ans4     		bool   `json:"ans4"`
+	QuizId   		uint   `json:"QuizID,string"`
+	QuestionType    string `json:"QuestionType"`
+	URL				string `json:"URL"`
 }
 type History struct {
 	ID         uint   `json:"id"`
@@ -73,6 +75,7 @@ func main() {
 		private.GET("/quiz-list/", ViewAllQuizzes)
 		private.POST("/CreateQuiz/", CreateQuiz)
 		private.GET("/AllPeople/", ListPeople)
+		private.GET("/GetHistory/", GetHistory)
 		private.GET("/GetQuestion/:id", GetQuestion)
 		private.GET("/getPlayerId/", getPlayerId)
 		private.GET("/getPlayerName/", getPlayerName)
@@ -319,5 +322,17 @@ func ListPeople(c *gin.Context) {
 		fmt.Println("error = ", err)
 	} else {
 		c.JSON(200, people)
+	}
+}
+
+func GetHistory(c *gin.Context) {
+	var history []History
+	c.Header("access-control-allow-origin", "*")
+	// c.Header("access-control-allow-credentials", "true")
+	if err := db.Order("score desc").Find(&history).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println("error = ", err)
+	} else {
+		c.JSON(200, history)
 	}
 }

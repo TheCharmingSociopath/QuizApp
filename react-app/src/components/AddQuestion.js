@@ -22,6 +22,8 @@ class AddQuestion extends Component {
           ans4: false, //True/False
 
           QuizId: 0,
+          QuestionType: "Multiple Correct Type",
+          URL: "",
         },
         submitted: false,
       }
@@ -30,6 +32,10 @@ class AddQuestion extends Component {
       this.handleO2Change = this.handleO2Change.bind(this); //option 2
       this.handleO3Change = this.handleO3Change.bind(this); //option 3
       this.handleO4Change = this.handleO4Change.bind(this); //option 4
+      this.handleMCTChange = this.handleMCTChange.bind(this); //Type
+      this.handleVTChange = this.handleVTChange.bind(this); //Type
+      this.handleITChange = this.handleITChange.bind(this); //Type
+      this.handleURLChange = this.handleURLChange.bind(this); //URL
       this.makeOpt1True = this.makeOpt1True.bind(this)
       this.makeOpt2True = this.makeOpt2True.bind(this)
       this.makeOpt3True = this.makeOpt3True.bind(this)
@@ -65,6 +71,9 @@ class AddQuestion extends Component {
     handleQChange(event) {
       this.state.formData.Question = event.target.value;
     }
+    handleURLChange(event) {
+      this.state.formData.URL = event.target.value;
+    }
     handleO1Change(event) {
       this.state.formData.opt1 = event.target.value;
     }
@@ -76,6 +85,15 @@ class AddQuestion extends Component {
     }
     handleO4Change(event) {
       this.state.formData.opt4 = event.target.value;
+    }
+    handleMCTChange(event) {
+      this.state.formData.QuestionType = "Multiple Type Correct";
+    }
+    handleITChange(event) {
+      this.state.formData.QuestionType = "Image";
+    }
+    handleVTChange(event) {
+      this.state.formData.QuestionType = "Video";
     }
     makeOpt1True(event) {
         this.state.formData.ans1 = true;
@@ -115,6 +133,11 @@ class AddQuestion extends Component {
               <div className="form-group">
                   <label>Question</label>
                   <input type="text" className="form-control" value={this.state.Question} onChange={this.handleQChange}/>
+              </div>
+
+              <div className="form-group">
+                  <label>URL (Only in case of Image or Video)</label>
+                  <input type="text" className="form-control" value={this.state.URL} onChange={this.handleURLChange}/>
               </div>
 
               <div className="form-group">
@@ -161,6 +184,18 @@ class AddQuestion extends Component {
                        <div className="dropdown-content">
                            <a value={true} onClick={this.makeOpt4True} href="#">True</a>
                            <a value={false} onClick={this.makeOpt4False} href="#">False</a>
+                       </div>
+                  </div>
+              </div>
+
+              <div className="form-group">
+                  <label>Question Type</label> <br/>
+                  <div className="dropdown">
+                       <button className="dropbtn">{this.state.formData.QuestionType}</button>
+                       <div className="dropdown-content">
+                           <a value="Multiple Correct" onClick={this.handleMCTChange} href="#">Multiple Correct Type</a>
+                           <a value="Image" onClick={this.handleITChange} href="#">Image</a>
+                           <a value="Video" onClick={this.handleVTChange} href="#">Video</a>
                        </div>
                   </div>
               </div>

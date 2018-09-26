@@ -11,7 +11,7 @@ class Rankings extends Component {
 
   // Lifecycle hook, runs after component has mounted onto the DOM structure
   componentDidMount() {
-    const request = new Request('http://localhost:8080/private/CommonRanking/');
+    const request = new Request('http://localhost:8080/private/GetHistory/');
     fetch(request)
       .then(response => response.json())
         .then(data => {this.setState({data: data}); console.log(this.state.data)} );
@@ -27,27 +27,24 @@ class Rankings extends Component {
             <table className="table-hover">
               <thead>
                 <tr>
-                  <th>Select</th>
-                  <th>ID</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Email ID</th>
+                  <th>Player Name</th>
+                  <th>Quiz ID</th>
+                  <th>Quiz Name</th>
+                  <th>Score</th>
                 </tr>
               </thead>
               <tbody>{this.state.data.map((item, key) => {
                   return (
                       <tr key = {key}>
-                          <td><input type="radio" value={item.id} name="select" onClick={this.handleChange} /></td>
-                          <td>{item.id}</td>
-                          <td>{item.firstname}</td>
-                          <td>{item.lastname}</td>
-                          <td>{item.email}</td>
+                          <td>{item.playername}</td>
+                          <td>{item.QuizId}</td>
+                          <td>{item.quizname}</td>
+                          <td>{item.score}</td>
                       </tr>
                     )
                 })}
               </tbody>
             </table>
-            <button type="submit" className="btn btn-default">Delete</button>
         </div>
       </div>
     );

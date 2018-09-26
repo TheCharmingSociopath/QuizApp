@@ -12,7 +12,6 @@ import PlayerHome from './PlayerHome.js';
 import ViewQuizzesPlayer from './ViewQuizzesPlayer';
 import TakeQuiz from './TakeQuiz';
 import Rankings from './Rankings';
-
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 class App extends Component {
@@ -24,7 +23,7 @@ class App extends Component {
             <nav className="navbar navbar-default">
               <div className="container-fluid">
                 <div className="navbar-header">
-                  <Link className="navbar-brand" to={'/'}>React App</Link>
+                  <Link className="navbar-brand" to={'#'}>Quiz App</Link>
                 </div>
                 <ul className="nav navbar-nav">
                   <li><Link to={'/'}>Home</Link></li>
