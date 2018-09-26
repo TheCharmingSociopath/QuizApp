@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import './Login.css';
 import PropTypes from 'prop-types';
+import GoogleLogin from 'react-google-login';
 
 class Login extends Component {
   constructor() {
     super();
     this.state = {
       formData: {
+        email: "",
+        password: "",
+      },
+      googleFormData: {
+        firstName: "",
+        lastName: "",
         email: "",
         password: "",
       },
@@ -20,6 +27,29 @@ class Login extends Component {
 
   static contextTypes = {
     router: PropTypes.object,
+  }
+
+  responseGoogle = (response) => {
+    this.state.googleFormData.email = response.w3.U3;
+    this.state.googleFormData.firstName = response.w3.ofa;
+    this.state.googleFormData.lastName = response.w3.wea;
+
+    fetch('http://localhost:8080/people', {
+     method: 'POST',
+    //  mode: 'no-cors',
+     body: JSON.stringify(this.state.googleFormData),
+   })
+      .then(response => {
+        if(response.status >= 200 && response.status < 300) {
+          response.json()
+            .then(
+              data => {
+                  this.setState({submitted: true});
+                  this.context.router.history.push("/PlayerHome/" + data.id);
+              }
+            )
+        }
+      });
   }
 
   handleSubmit (event) {
@@ -79,6 +109,14 @@ class Login extends Component {
             </div>
             <button type="submit" className="btn btn-default">Submit</button>
           </form>
+
+          <GoogleLogin
+            clientId="933199541117-05dnde8vm3gf9hlo2dptfr90ntpodl8u.apps.googleusercontent.com"
+            buttonText="Login via Google"
+            onSuccess={this.responseGoogle}
+            onFailure={this.responseGoogle}
+          />
+
         </div>
 
         {/* {this.state.submitted &&
